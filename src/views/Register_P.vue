@@ -35,9 +35,8 @@
     </div>
   </div>
 </template>
-
 <script>
-import axios from "axios";
+import API from "@/api";
 
 export default {
   name: "RegisterPage",
@@ -51,27 +50,28 @@ export default {
     };
   },
   methods: {
-  async doRegister() {
-    this.error = "";
-    this.success = "";
+    async doRegister() {
+      this.error = "";
+      this.success = "";
 
-    try {
-      const res = await API.post("/register", {
-        email: this.email,
-        password: this.password,
-      });
+      try {
+        const res = await API.post("/register", {
+          email: this.email,
+          password: this.password,
+        });
 
-      if (res.status === 200 || res.status === 201) {
-        this.success = "Registration successful! Redirecting to login...";
-        setTimeout(() => {
-          this.$router.push("/login");
-        }, 1000);
+        if (res.status === 200 || res.status === 201) {
+          this.success = "Registration successful! Redirecting to login...";
+          setTimeout(() => {
+            this.$router.push("/login");
+          }, 1000);
+        }
+      } catch (err) {
+        this.error =
+          err.response?.data?.message ||
+          "Registration failed — please try again.";
       }
-    } catch (err) {
-      this.error =
-        err.response?.data?.message ||
-        "Registration failed — please try again.";
-    }
+    },
   },
-},
+};
 </script>
