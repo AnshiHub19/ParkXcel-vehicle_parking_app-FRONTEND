@@ -55,7 +55,7 @@ export default {
       this.error = "";
       this.success = "";
       try {
-        axios.post("https://parkxcel-vehicle-parking-app-backend.onrender.com/api/register", {
+        axios.post("/register", {
   
           email: this.email,
           password: this.password,
