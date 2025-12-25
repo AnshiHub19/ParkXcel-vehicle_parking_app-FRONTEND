@@ -51,24 +51,27 @@ export default {
     };
   },
   methods: {
-    async doRegister() {
-      this.error = "";
-      this.success = "";
-      try {
-        axios.post("/register", {
-  
-          email: this.email,
-          password: this.password,
-        });
+  async doRegister() {
+    this.error = "";
+    this.success = "";
 
-        if(res.status === 201){
-          this.success = "Registration successful! Redirecting to login...";
-          setTimeout(() => this.$router.push("/login"), 1000);
-        }
-      } catch (err) {
-        this.error = err.response?.data?.message || "Registration failed — please try again.";
+    try {
+      const res = await API.post("/register", {
+        email: this.email,
+        password: this.password,
+      });
+
+      if (res.status === 200 || res.status === 201) {
+        this.success = "Registration successful! Redirecting to login...";
+        setTimeout(() => {
+          this.$router.push("/login");
+        }, 1000);
       }
-    },
+    } catch (err) {
+      this.error =
+        err.response?.data?.message ||
+        "Registration failed — please try again.";
+    }
   },
-};
+},
 </script>
