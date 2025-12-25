@@ -56,6 +56,7 @@ export default {
 
       try {
         const res = await API.post("/register", {
+          username: this.username,
           email: this.email,
           password: this.password,
         });
