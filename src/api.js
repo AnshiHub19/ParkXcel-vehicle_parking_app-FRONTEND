@@ -2,7 +2,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "https://parkxcel-vehicle-parking-app-backend.onrender.com",
+  baseURL: "https://parkxcel-vehicle-parking-app-backend.onrender.com/api",
 });
 
 // Automatically attach token if it exists
