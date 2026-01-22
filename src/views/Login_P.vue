@@ -7,9 +7,13 @@
     <div class="login-card">
       <!-- top badge -->
       <div class="login-badge">
-        <i class="bi bi-person-circle"></i>
-      </div>
-
+  <svg width="38" height="38" viewBox="0 0 24 24" fill="none">
+    <path
+      d="M12 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5Zm0 2c-3.33 0-10 1.67-10 5v3h20v-3c0-3.33-6.67-5-10-5Z"
+      fill="white"
+    />
+  </svg>
+</div>
       <h3 class="title">Login to your account</h3>
       <p class="subtitle">Continue your flow — ParkXcel</p>
 
@@ -136,7 +140,7 @@ export default {
 }
 
 /* ---------- Badge ---------- */
-.login-badge {
+  .login-badge {
   width: 80px;
   height: 80px;
   background: linear-gradient(135deg, #7c3aed, #6366f1);
