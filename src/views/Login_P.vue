@@ -1,47 +1,45 @@
 <template>
   <div class="login-page">
-    <div class="login-container">
-      <header class="login-header">
-        <h2>Welcome back</h2>
-        <p>Sign in to continue with ParkXcel</p>
-      </header>
+    <div class="login-card">
 
-      <form class="login-form" @submit.prevent="handleLogin">
+      <!-- Top Icon -->
+      <div class="avatar">
+        <i class="bi bi-person-fill"></i>
+      </div>
+
+      <h3 class="title">Login to your account</h3>
+      <p class="subtitle">Continue your flow — ParkXcel</p>
+
+      <form @submit.prevent="doLogin">
         <div class="form-group">
-          <label>Email</label>
           <input
-            v-model.trim="username"
+            v-model="username"
             type="text"
-            class="form-control"
-            placeholder="Enter your email"
+            placeholder="Username / Email"
             required
           />
         </div>
 
         <div class="form-group">
-          <label>Password</label>
           <input
             v-model="password"
             type="password"
-            class="form-control"
-            placeholder="Enter your password"
+            placeholder="Password"
             required
           />
         </div>
 
-        <button class="btn-primary" type="submit">
-          Sign In
+        <button type="submit" class="login-btn">
+          Log in
         </button>
 
-        <p v-if="error" class="error-text">
-          {{ error }}
-        </p>
+        <p class="error" v-if="error">{{ error }}</p>
       </form>
 
-      <footer class="login-footer">
-        <span>New to ParkXcel?</span>
-        <router-link to="/register">Create an account</router-link>
-      </footer>
+      <p class="bottom-text">
+        No account yet?
+        <router-link to="/register">Sign up now</router-link>
+      </p>
     </div>
   </div>
 </template>
@@ -51,7 +49,6 @@ import API from "@/api";
 
 export default {
   name: "LoginPage",
-
   data() {
     return {
       username: "",
@@ -59,33 +56,30 @@ export default {
       error: ""
     };
   },
-
   methods: {
-    async handleLogin() {
+    async doLogin() {
       this.error = "";
-
       try {
-        const response = await API.post("/login", {
+        const res = await API.post("/login", {
           username: this.username,
           password: this.password
         });
 
-        const { user, access_token } = response.data;
+        const userData = res.data.user;
+        const token = res.data.access_token;
 
-        localStorage.setItem("auth_token", access_token);
-        localStorage.setItem("user_roles", JSON.stringify(user.roles));
+        localStorage.setItem("auth_token", token);
+        localStorage.setItem("user_roles", JSON.stringify(userData.roles));
 
-        if (user.roles.includes("admin")) {
+        if (userData.roles.includes("admin")) {
           this.$router.push("/admin");
-        } else if (user.roles.includes("user")) {
-          this.$router.push("/user");
         } else {
-          this.error = "Unauthorized role detected.";
+          this.$router.push("/user");
         }
       } catch (err) {
         this.error =
           err.response?.data?.message ||
-          "Invalid credentials. Please try again.";
+          "Invalid credentials or server error.";
       }
     }
   }
@@ -93,91 +87,101 @@ export default {
 </script>
 
 <style scoped>
+/* ---------- Background ---------- */
 .login-page {
   min-height: 100vh;
+  background: linear-gradient(135deg, #8b5cf6, #6366f1);
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #eef2ff, #f9fafb);
 }
 
-/* Card */
-.login-container {
-  width: 420px;
-  padding: 42px;
-  background: rgba(255, 255, 255, 0.88);
-  backdrop-filter: blur(12px);
-  border-radius: 18px;
-  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.1);
+/* ---------- Card ---------- */
+.login-card {
+  width: 360px;
+  background: #ffffff;
+  border-radius: 22px;
+  padding: 45px 30px;
+  text-align: center;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.18);
+  position: relative;
 }
 
-/* Header */
-.login-header h2 {
-  margin-bottom: 6px;
-  font-weight: 700;
-  color: #4f46e5;
+/* ---------- Avatar ---------- */
+.avatar {
+  width: 70px;
+  height: 70px;
+  background: linear-gradient(135deg, #7c3aed, #6366f1);
+  border-radius: 50%;
+  margin: -80px auto 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 30px;
 }
 
-.login-header p {
-  margin-bottom: 28px;
-  color: #6b7280;
-}
-
-/* Form */
-.form-group {
-  margin-bottom: 18px;
-}
-
-.form-control {
-  height: 48px;
-  border-radius: 10px;
-  border: 1px solid #d1d5db;
-  padding: 0 14px;
-}
-
-.form-control:focus {
-  outline: none;
-  border-color: #4f46e5;
-  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.15);
-}
-
-/* Button */
-.btn-primary {
-  width: 100%;
-  height: 48px;
-  margin-top: 8px;
-  background-color: #4f46e5;
-  border: none;
-  border-radius: 12px;
-  color: #ffffff;
+/* ---------- Text ---------- */
+.title {
   font-weight: 600;
-  cursor: pointer;
-}
-
-.btn-primary:hover {
-  background-color: #4338ca;
-}
-
-.error-text {
-  margin-top: 14px;
-  text-align: center;
-  color: #dc2626;
-  font-size: 0.9rem;
-}
-.login-footer {
-  margin-top: 28px;
-  text-align: center;
-  font-size: 0.95rem;
-}
-
-.login-footer a {
-  margin-left: 6px;
   color: #4f46e5;
+  margin-bottom: 6px;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 25px;
+}
+
+/* ---------- Inputs ---------- */
+.form-group input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid #d1d5db;
+  margin-bottom: 16px;
+  font-size: 14px;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+}
+
+/* ---------- Button ---------- */
+.login-btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 14px;
+  border: none;
+  background: linear-gradient(135deg, #7c3aed, #6366f1);
+  color: white;
+  font-weight: 600;
+  margin-top: 10px;
+}
+
+.login-btn:hover {
+  opacity: 0.95;
+}
+
+/* ---------- Error ---------- */
+.error {
+  color: #dc2626;
+  font-size: 14px;
+  margin-top: 12px;
+}
+
+/* ---------- Bottom ---------- */
+.bottom-text {
+  margin-top: 22px;
+  font-size: 14px;
+}
+
+.bottom-text a {
+  color: #6366f1;
   font-weight: 600;
   text-decoration: none;
-}
-
-.login-footer a:hover {
-  text-decoration: underline;
 }
 </style>
